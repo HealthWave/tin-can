@@ -8,7 +8,7 @@ module TinCan
   end
 
   # {
-  #   "health_wave.store_created" => {EmersonEventController => :store_created}
+  #   "health_wave.store_created" => {MyEventController => :store_created}
   # }
   def self.subcribe(channel, to: TinCan::Controller, with_method: nil)
     @@routes ||= {}

@@ -34,10 +34,10 @@ module TinCan
 
     def run!
       begin
-        system "kill -9 $(cat #{root_path}/tmp/pids/emerson_event_handler.pid)"
+        system "kill -9 $(cat #{root_path}/tmp/pids/tin_can.pid)"
         options = { :backtrace  => true, :ontop      => true, :log_output => true }
 
-        File.open("#{root_path}/tmp/pids/emerson_event_handler.pid", 'w') do |f|
+        File.open("#{root_path}/tmp/pids/tin_can.pid", 'w') do |f|
           f.puts Process.pid
         end
 
@@ -52,7 +52,7 @@ module TinCan
 
             controller = controller_klass.new(msg)
             raise TinCan::Controller::ActionNotDefined.new(action, controller_klass.name) unless controller.public_methods(false).include(action)
-            controller.public_methods(action)
+            controller.public_send(action)
           end
         end
       rescue Redis::BaseConnectionError => error
