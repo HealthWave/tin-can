@@ -1,0 +1,34 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+Controller	lib/tin_can/controller.rb	/^  class Controller$/;"	c	class:TinCan
+Event	lib/tin_can/event.rb	/^  class Event$/;"	c	class:TinCan
+Handler	lib/tin_can/handler.rb	/^  class Handler$/;"	c	class:TinCan
+TinCan	lib/tin_can.rb	/^module TinCan$/;"	m
+TinCan	lib/tin_can/controller.rb	/^module TinCan$/;"	m
+TinCan	lib/tin_can/errors.rb	/^class TinCan::Controller::ActionMissing < StandardError$/;"	c
+TinCan	lib/tin_can/errors.rb	/^class TinCan::Controller::ActionNotDefined < StandardError$/;"	c
+TinCan	lib/tin_can/errors.rb	/^class TinCan::Controller::ControllerNotDefined < StandardError$/;"	c
+TinCan	lib/tin_can/event.rb	/^module TinCan$/;"	m
+TinCan	lib/tin_can/handler.rb	/^module TinCan$/;"	m
+TinCan	lib/tin_can/version.rb	/^module TinCan$/;"	m
+config	lib/tin_can.rb	/^  def self.config redis_host: 'localhost', redis_port: 6379, &b$/;"	F	class:TinCan
+fire!	lib/tin_can/event.rb	/^    def fire!$/;"	f	class:TinCan.Event
+handle	lib/tin_can/handler.rb	/^    def handle channel, msg$/;"	f	class:TinCan.Handler
+initialize	lib/tin_can/controller.rb	/^    def initialize(msg)$/;"	f	class:TinCan.Controller
+initialize	lib/tin_can/errors.rb	/^  def initialize action, controller$/;"	f	class:TinCan
+initialize	lib/tin_can/errors.rb	/^  def initialize controller$/;"	f	class:TinCan
+initialize	lib/tin_can/event.rb	/^    def initialize(channel, payload)$/;"	f	class:TinCan.Event
+initialize	lib/tin_can/handler.rb	/^    def initialize(events)$/;"	f	class:TinCan.Handler
+redis	lib/tin_can.rb	/^  def self.redis$/;"	F	class:TinCan
+register_handler	lib/tin_can.rb	/^  def self.register_handler(handler)$/;"	F	class:TinCan
+restart	lib/tin_can/handler.rb	/^    def restart$/;"	f	class:TinCan.Handler
+run!	lib/tin_can/handler.rb	/^    def run!$/;"	f	class:TinCan.Handler
+save_pid	lib/tin_can/handler.rb	/^    def save_pid$/;"	f	class:TinCan
+start	lib/tin_can.rb	/^  def self.start(root_path)$/;"	F	class:TinCan
+start	lib/tin_can/handler.rb	/^    def start foreground: false$/;"	f	class:TinCan.Handler
+stop	lib/tin_can/handler.rb	/^    def stop$/;"	f	class:TinCan.Handler
+subcribe	lib/tin_can.rb	/^  def self.subcribe(channel, to: TinCan::Controller, with_method: nil)$/;"	F	class:TinCan
