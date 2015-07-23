@@ -1,3 +1,9 @@
+class TinCan::NotConfigured < StandardError
+  def initialize
+    super("No routes specified, us ::subscribe to add routes.")
+  end
+end
+
 class TinCan::EventController::ActionMissing < StandardError
   def initialize controller
     super "Action not supplied for controller: #{controller}."

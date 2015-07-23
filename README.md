@@ -1,4 +1,5 @@
 # tin-can
+[![Circle CI](https://circleci.com/gh/HealthWave/tin-can.svg?style=svg)](https://circleci.com/gh/HealthWave/tin-can)
 
 tin-can allows you to do pub/sub between apps using redis.
 
@@ -23,13 +24,13 @@ Or install it yourself as:
 
 First create a initializer on config/tin_can.rb
 
-```
+```ruby
 TinCan.subscribe 'event_name', to: MyEventController, action: :my_action
 TinCan.start
 ```
 
 Then create an EventController: app/event_controllers/my_event_controller.rb
-```
+```ruby
 class MyEventController < TinCan::EventController
   def my_action
     # awesome stuff here!
@@ -39,7 +40,7 @@ end
 Every time the TinCan receives an event, the TinCan::EventHandler will match and route to the desired event controller and action.
 
 ### To send events
-```
+```ruby
 TinCan::Event.new(channel_name, payload)
 ```
 
