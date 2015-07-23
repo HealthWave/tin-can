@@ -1,6 +1,6 @@
 module TinCan
   class EventHandler
-    attr attr_accessor :events, :thread
+    attr_accessor :events, :thread
 
     def initialize(events)
       @events = events

@@ -1,4 +1,7 @@
 require "tin_can/version"
+require "tin_can/event"
+require "tin_can/event_controller"
+require "tin_can/event_handler"
 
 module TinCan
   def self.config redis_host: 'localhost', redis_port: 6379, &b
@@ -28,3 +31,5 @@ module TinCan
     $redis = Redis.new(:host => $redis_host, :port => $redis_port, :thread_safe => true)
   end
 end
+
+require 'tin_can/errors'
