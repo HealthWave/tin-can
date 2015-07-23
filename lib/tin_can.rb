@@ -13,14 +13,14 @@ module TinCan
   # {
   #   "health_wave.store_created" => {MyEventController => :store_created}
   # }
-  def self.subcribe(channel, to: TinCan::EventController, action:)
+  def self.subscribe(channel, to: TinCan::EventController, action:)
     @@routes ||= {}
     @@routes[channel] = [ to,  action ]
   end
 
   # TODO PID?
   def self.start
-    TinCan::EventHandler.new.start
+    TinCan::EventHandler.new(@@routes.keys).start
   end
 
   def self.redis

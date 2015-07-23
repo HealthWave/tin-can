@@ -1,6 +1,6 @@
 module TinCan
   class EventHandler
-    attr_accessor :events, :thread
+    @@thread = nil
 
     def initialize(events)
       @events = events
@@ -17,14 +17,16 @@ module TinCan
     end
 
     def stop
-      @thread.kill
+      @@thread.kill if @@thread
     end
 
     def start foreground: false
+      self.stop
+
       if foreground
         run!
       else
-        @thread = Thread.new do
+        @@thread = Thread.new do
           run!
         end
       end
@@ -37,9 +39,9 @@ module TinCan
         system "kill -9 $(cat #{root_path}/tmp/pids/tin_can.pid)"
         options = { :backtrace  => true, :ontop      => true, :log_output => true }
 
-        File.open("#{root_path}/tmp/pids/tin_can.pid", 'w') do |f|
-          f.puts Process.pid
-        end
+        # File.open("#{root_path}/tmp/pids/tin_can.pid", 'w') do |f|
+        #   f.puts Process.pid
+        # end
 
         self.redis.subscribe(*@events) do |on|
           on.message do |channel, msg|
