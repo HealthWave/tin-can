@@ -17,7 +17,7 @@ module TinCan
 
   # TODO PID?
   def self.start
-    TinCan::Handler.new.start
+    TinCan::EventHandler.new.start
   end
 
   def self.redis

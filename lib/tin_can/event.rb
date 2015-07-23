@@ -3,13 +3,7 @@ module TinCan
     attr_reader :channel, :payload
     def initialize(channel, payload)
       @channel = channel
-
-      case payload
-      when String
-        @payload = payload
-      when Hash
-        @payload = payload.to_json
-      end
+      @payload = payload.to_json
     end
 
     def fire!
