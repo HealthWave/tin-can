@@ -1,7 +1,8 @@
 module TinCan
-  class Controller
-    def initialize(msg)
-      @msg = msg
+  class EventController
+    attr_reader :params
+    def initialize(object)
+      @params = JSON.parse object
     end
   end
 end

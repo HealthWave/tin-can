@@ -36,7 +36,12 @@ class MyEventController < TinCan::EventController
   end
 end
 ```
-Every time the TinCan receives an event, the TinCan::Handler will match and route to the desired event controller and action.
+Every time the TinCan receives an event, the TinCan::EventHandler will match and route to the desired event controller and action.
+
+### To send events
+```
+TinCan::Event.new(channel_name, payload)
+```
 
 ## Development
 
