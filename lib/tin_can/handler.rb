@@ -47,11 +47,13 @@ module TinCan
 
             controller_klass, action = TinCan.routes[channel]
 
-            raise TinCan::Controller::ControllerNotDefined.new unless controller_klass
-            raise TinCan::Controller::ActionMissing.new(controller_klass.name) unless action
+            raise TinCan::EventController::ControllerNotDefined.new unless controller_klass
+            raise TinCan::EventController::ActionMissing.new(controller_klass.name) unless action
 
             controller = controller_klass.new(msg)
-            raise TinCan::Controller::ActionNotDefined.new(action, controller_klass.name) unless controller.public_methods(false).include(action)
+
+            raise TinCan::EventController::ActionNotDefined.new(action, controller_klass.name) unless controller.public_methods(false).include(action)
+
             controller.public_send(action)
           end
         end

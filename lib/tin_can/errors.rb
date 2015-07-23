@@ -1,16 +1,16 @@
-class TinCan::Controller::ActionMissing < StandardError
+class TinCan::EventController::ActionMissing < StandardError
   def initialize controller
     super "Action not supplied for controller: #{controller}."
   end
 end
 
-class TinCan::Controller::ActionNotDefined < StandardError
+class TinCan::EventController::ActionNotDefined < StandardError
   def initialize action, controller
     super "The action: #{action} is not defined for #{controller}."
   end
 end
 
-class TinCan::Controller::ControllerNotDefined < StandardError
+class TinCan::EventController::ControllerNotDefined < StandardError
   def initialize controller
     super "Action #{controller} is not defined."
   end

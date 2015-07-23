@@ -1,6 +1,7 @@
 # tin-can
 
-tin-can is a gem used to facilitate pubsub using redis on multiple servers that share the same redis host.
+tin-can allows you to do pub/sub between apps using redis.
+
 
 ## Installation
 
@@ -12,7 +13,7 @@ gem 'tin-can'
 
 And then execute:
 
-    $ bundle
+    $ bundle install
 
 Or install it yourself as:
 
@@ -20,7 +21,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+First create a initializer on config/tin_can.rb
+
+```
+TinCan.subscribe 'event_name', to: MyEventController, action: :my_action
+TinCan.start
+```
+
+Then create an EventController: app/event_controllers/my_event_controller.rb
+```
+class MyEventController < TinCan::EventController
+  def my_action
+    # awesome stuff here!
+  end
+end
+```
+Every time the TinCan receives an event, the TinCan::Handler will match and route to the desired event controller and action.
 
 ## Development
 
