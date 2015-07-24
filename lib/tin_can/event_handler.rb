@@ -1,14 +1,9 @@
 module TinCan
   class EventHandler
-    @@thread = nil
+    attr_reader :events, :thread
 
     def initialize(events)
       @events = events
-    end
-
-    def handle channel, msg
-      raise NotImplemented unless block_given?
-      yield channel, msg
     end
 
     def restart
@@ -17,7 +12,8 @@ module TinCan
     end
 
     def stop
-      @@thread.kill if @@thread
+      thread.kill if thread
+      @thread = nil
     end
 
     def start foreground: false
@@ -26,13 +22,9 @@ module TinCan
       if foreground
         run!
       else
-        @@thread = Thread.new do
-          run!
-        end
+        @thread = Thread.new { run! }
       end
     end
-
-    private
 
     def run!
       begin
@@ -66,7 +58,5 @@ module TinCan
       end
     end
 
-    def save_pid
-    end
   end
 end

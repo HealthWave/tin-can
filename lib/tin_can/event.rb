@@ -1,3 +1,5 @@
+require 'json'
+
 module TinCan
   class Event
     attr_reader :channel, :payload
@@ -7,7 +9,7 @@ module TinCan
     end
 
     def fire!
-      self.class.redis.publish channel, payload
+      TinCan.redis.publish channel, payload
     end
 
   end
