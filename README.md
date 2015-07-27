@@ -1,5 +1,7 @@
 # tin-can
 [![Circle CI](https://circleci.com/gh/HealthWave/tin-can.svg?style=svg)](https://circleci.com/gh/HealthWave/tin-can)
+[![Code Climate](https://codeclimate.com/github/HealthWave/tin-can/badges/gpa.svg)](https://codeclimate.com/github/HealthWave/tin-can)
+[![Test Coverage](https://codeclimate.com/github/HealthWave/tin-can/badges/coverage.svg)](https://codeclimate.com/github/HealthWave/tin-can/coverage)
 
 tin-can allows you to do pub/sub between apps using redis.
 

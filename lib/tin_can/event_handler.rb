@@ -2,6 +2,7 @@ require 'daemons'
 
 module TinCan
   class EventHandler
+    PID_FILE_NAME = 'tin_can.pid'
     attr_reader :events, :pid
 
     def initialize(events)
@@ -9,25 +10,31 @@ module TinCan
     end
 
     def restart
-      self.stop
+      self.class.stop
       self.start
     end
 
-    def stop
-      system 'mkdir -p ./tmp/pids/ > /dev/null'
-      system 'kill -9 $(cat ./tmp/pids/tin_can.pid) > /dev/null'
-      system 'rm  ./tmp/pids/tin_can.pid > /dev/null'
+    def self.stop working_dir=nil
+      pid_dir = File.join(working_dir || './', 'tmp', 'pids')
+      filepath =  File.join("tmp", "proc", PID_FILE_NAME)
+      if File.exists?(filepath)
+        current_pid = File.open(filepath, 'r').read.chomp
+        system "mkdir -p #{pid_dir} > /dev/null"
+        system "pgrep #{current_pid} && kill -9 #{current_pid} && rm #{filepath}"
+      end
 
       @pid = nil
     end
 
-    def start backtrace: true, ontop: true, log_output: true
-      self.stop
+    def start backtrace: false, ontop: false, log_output: false
+      self.class.stop
 
+      working_dir= defined?(Rails) && Rails.respond_to?(:root) && Rails.root.to_s || Dir.pwd
       Daemons.daemonize(backtrace: backtrace, ontop: ontop, log_output: log_output)
 
-      File.open("./tmp/pids/tin_can.pid", 'w') do |f|
-        f.puts Process.pid
+      @pid = Process.pid
+      File.open( File.join(working_dir, "tmp/pids/#{PID_FILE_NAME}"), 'w') do |f|
+        f.puts @pid
       end
 
       TinCan.redis.subscribe(*@events) do |on|
@@ -41,18 +48,10 @@ module TinCan
 
           controller = controller_klass.new(msg)
 
-          raise TinCan::EventController::ActionNotDefined.new(action, controller_klass.name) unless controller.public_methods(false).include(action)
+          raise TinCan::EventController::ActionNotDefined.new(action, controller_klass.name) unless controller.public_methods(false).include?(action.to_sym)
 
           controller.public_send(action)
         end
-      end
-    rescue Redis::BaseConnectionError => error
-      puts "#{error}, retrying in 1s"
-
-      if foreground
-        run!
-      else
-        @pid = Thread.new { run! }
       end
     end
   end

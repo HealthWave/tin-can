@@ -5,6 +5,7 @@ require "tin_can/event_controller"
 require "tin_can/event_handler"
 
 module TinCan
+  @@handler = nil
   @@routes = nil
   @@redis_host = nil
   @@redis_port = nil
@@ -26,9 +27,15 @@ module TinCan
     @@routes[channel] = [ to,  action ]
   end
 
-  def self.start
+  def self.start ontop=ENV['ONTOP']
     raise TinCan::NotConfigured.new unless routes
-    TinCan::EventHandler.new(routes.keys).start
+
+    @@handler = TinCan::EventHandler.new(routes.keys)
+    @@handler.start ontop: ontop
+  end
+
+  def self.stop
+    TinCan::EventHandler.stop
   end
 
   def self.redis
