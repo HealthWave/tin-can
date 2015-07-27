@@ -2,10 +2,12 @@ require 'daemons'
 
 module TinCan
   class EventHandler
+    PID_FILE_NAME = 'tin_can.pid'
     attr_reader :events, :pid
 
     def initialize(events)
       @events = events
+      @working_dir = nil
     end
 
     def restart
@@ -14,20 +16,23 @@ module TinCan
     end
 
     def stop
-      system 'mkdir -p ./tmp/pids/ > /dev/null'
-      system 'kill -9 $(cat ./tmp/pids/tin_can.pid) > /dev/null'
-      system 'rm  ./tmp/pids/tin_can.pid > /dev/null'
+      pid_dir = File.join(@working_dir || './', 'tmp', 'pids')
+      system "mkdir -p #{pid_dir} > /dev/null"
+      system "kill -9 $(cat #{pid_dir}/#{PID_FILE_NAME}) > /dev/null"
+      system "rm  #{pid_dir}/#{PID_FILE_NAME} > /dev/null"
 
       @pid = nil
     end
 
-    def start backtrace: true, ontop: true, log_output: true
+    def start backtrace: false, ontop: false, log_output: false
       self.stop
 
+      @working_dir= Dir.pwd
       Daemons.daemonize(backtrace: backtrace, ontop: ontop, log_output: log_output)
 
-      File.open("./tmp/pids/tin_can.pid", 'w') do |f|
-        f.puts Process.pid
+      @pid = Process.pid
+      File.open( File.join(@working_dir, "tmp/pids/#{PID_FILE_NAME}"), 'w') do |f|
+        f.puts @pid
       end
 
       TinCan.redis.subscribe(*@events) do |on|
@@ -41,7 +46,7 @@ module TinCan
 
           controller = controller_klass.new(msg)
 
-          raise TinCan::EventController::ActionNotDefined.new(action, controller_klass.name) unless controller.public_methods(false).include(action)
+          raise TinCan::EventController::ActionNotDefined.new(action, controller_klass.name) unless controller.public_methods(false).include?(action.to_sym)
 
           controller.public_send(action)
         end
