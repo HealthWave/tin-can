@@ -17,9 +17,12 @@ module TinCan
 
     def stop
       pid_dir = File.join(@working_dir || './', 'tmp', 'pids')
-      system "mkdir -p #{pid_dir} > /dev/null"
-      system "kill -9 $(cat #{pid_dir}/#{PID_FILE_NAME}) > /dev/null"
-      system "rm  #{pid_dir}/#{PID_FILE_NAME} > /dev/null"
+      filepath =  File.join("tmp", "proc", PID_FILE_NAME)
+      if File.exists?(filepath)
+        current_pid = File.open(filepath, 'r').read.chomp
+        system "mkdir -p #{pid_dir} > /dev/null"
+        system "pgrep #{current_pid} && kill -9 #{current_pid} && rm #{filepath}"
+      end
 
       @pid = nil
     end
