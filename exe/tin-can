@@ -7,7 +7,7 @@ require 'tin_can'
 DEBUG = ENV['DEBUG']
 
 begin
-  TinCan.load_environment
+  TinCan.load_environment unless ARGV[0] == 'stop'
   options = {
     app_name: 'tin-can',
     monitor: true,
