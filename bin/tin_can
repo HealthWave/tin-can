@@ -6,7 +6,9 @@ require 'daemons'
 DEBUG = ENV['DEBUG']
 
 begin
-  Daemons.run('lib/tin_can_handler.rb')
+  Daemons.run_proc('tin_can') do
+    TinCan.start
+  end
 rescue => e
   raise e if DEBUG
   STDERR.puts e.message
