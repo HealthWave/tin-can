@@ -50,7 +50,12 @@ module TinCan
 
           raise TinCan::EventController::ActionNotDefined.new(action, controller_klass.name) unless controller.public_methods(false).include?(action.to_sym)
 
-          controller.public_send(action)
+          begin
+            controller.public_send(action)
+          rescue StandardError => e
+            puts e.message
+            puts e.backtrace
+          end
         end
       end
     end
