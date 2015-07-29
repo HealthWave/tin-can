@@ -1,6 +1,6 @@
 class TinCan::NotConfigured < StandardError
   def initialize
-    super("No routes specified, us ::subscribe to add routes.")
+    super("No routes specified, use ::subscribe to add routes.")
   end
 end
 

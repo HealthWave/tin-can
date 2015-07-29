@@ -1,5 +1,6 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env rails_runner runner
 require 'daemons'
+require 'tin_can'
 
 # Quiet some warnings we see when running in warning mode:
 # RUBYOPT=-w bundle exec sidekiq

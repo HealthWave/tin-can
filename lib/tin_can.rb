@@ -1,4 +1,5 @@
 require 'redis'
+
 require "tin_can/version"
 require "tin_can/event"
 require "tin_can/event_controller"
@@ -10,9 +11,14 @@ module TinCan
   @@redis_host = nil
   @@redis_port = nil
 
-  def self.routes
+
+  def self.routes &block
+    if block_given?
+      instance_eval &block
+    end
     @@routes
   end
+
 
   def self.config redis_host: 'localhost', redis_port: 6379
     @@redis_host = redis_host
