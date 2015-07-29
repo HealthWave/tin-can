@@ -8,7 +8,16 @@ DEBUG = ENV['DEBUG']
 
 begin
   TinCan.load_environment
-  Daemons.run_proc('tin_can') do
+  options = {
+    app_name: 'tin-can',
+    monitor: true,
+    dir: 'tmp/pids/',
+    log_output: true,
+    backtrace: true,
+    log_dir: 'log/',
+    output_logfilename: "tin-can.log",
+  }
+  Daemons.run_proc('tin-can', options) do
     TinCan.start
   end
 rescue => e

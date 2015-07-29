@@ -35,7 +35,7 @@ module TinCan
       # File.open( File.join(working_dir, "tmp/pids/#{PID_FILE_NAME}"), 'w') do |f|
       #   f.puts @pid
       # end
-
+      puts "subscribing to events #{@events}"
       TinCan.redis.subscribe(*@events) do |on|
         on.message do |channel, msg|
           puts "Recieved message with\n\tchannel:\t#{channel}\n\tmessage:\t#{msg}"

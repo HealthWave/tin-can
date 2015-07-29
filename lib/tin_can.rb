@@ -8,8 +8,8 @@ require "tin_can/event_handler"
 module TinCan
   @@handler = nil
   @@routes = nil
-  @@redis_host = nil
-  @@redis_port = nil
+  @@redis_host = 'localhost'
+  @@redis_port = 6379
 
 
   def self.routes &block
@@ -46,9 +46,9 @@ module TinCan
 
   def self.redis
     return $redis if $redis
-    raise  "Need to provid redis host and port to ::config" unless @@redis_port && @@redis_host
+    raise  "Need to provide redis host and port to ::config" unless @@redis_port && @@redis_host
 
-    $redis = Redis.new(:host => $redis_host, :port => $redis_port, :thread_safe => true)
+    $redis = Redis.new(:host => $redis_host, :port => $redis_port, :thread_safe => true, driver: :ruby)
   end
 
   def self.load_environment(file = nil)
