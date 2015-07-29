@@ -1,4 +1,4 @@
-#!/usr/bin/env rails_runner runner
+#!/usr/bin/env ruby
 require 'daemons'
 require 'tin_can'
 
@@ -7,6 +7,7 @@ require 'tin_can'
 DEBUG = ENV['DEBUG']
 
 begin
+  TinCan.load_environment
   Daemons.run_proc('tin_can') do
     TinCan.start
   end

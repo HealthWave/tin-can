@@ -33,11 +33,11 @@ module TinCan
     @@routes[channel] = [ to,  action ]
   end
 
-  def self.start ontop=ENV['ONTOP']
+  def self.start
     raise TinCan::NotConfigured.new unless routes
-
+    puts "Starting TinCan Handler with routes #{TinCan.routes}"
     @@handler = TinCan::EventHandler.new(routes.keys)
-    @@handler.start ontop: ontop
+    @@handler.start
   end
 
   def self.stop
@@ -49,6 +49,27 @@ module TinCan
     raise  "Need to provid redis host and port to ::config" unless @@redis_port && @@redis_host
 
     $redis = Redis.new(:host => $redis_host, :port => $redis_port, :thread_safe => true)
+  end
+
+  def self.load_environment(file = nil)
+    file ||= "."
+    puts 'Loading environment...'
+    # puts File.expand_path File.dirname(__FILE__)
+    if File.directory?(file) && File.exists?(File.expand_path("#{file}/config/environment.rb"))
+      require 'rails'
+      require File.expand_path("#{file}/config/environment.rb")
+      require File.expand_path("#{file}/config/tin_can_routes.rb")
+      if defined?(::Rails) && ::Rails.respond_to?(:application)
+        # Rails 3
+        ::Rails.application.eager_load!
+      elsif defined?(::Rails::Initializer)
+        # Rails 2.3
+        $rails_rake_task = false
+        ::Rails::Initializer.run :load_application_classes
+      end
+    elsif File.file?(file)
+      require File.expand_path(file)
+    end
   end
 end
 

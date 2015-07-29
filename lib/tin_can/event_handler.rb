@@ -26,17 +26,15 @@ module TinCan
       @pid = nil
     end
 
-    def start backtrace: false, ontop: false, log_output: false
+    def start
       # self.class.stop
-      load_environment
 
-      working_dir= defined?(Rails) && Rails.respond_to?(:root) && Rails.root.to_s || Dir.pwd
-      Daemons.daemonize(backtrace: backtrace, ontop: ontop, log_output: log_output)
+      # working_dir= defined?(Rails) && Rails.respond_to?(:root) && Rails.root.to_s || Dir.pwd
 
-      @pid = Process.pid
-      File.open( File.join(working_dir, "tmp/pids/#{PID_FILE_NAME}"), 'w') do |f|
-        f.puts @pid
-      end
+      # @pid = Process.pid
+      # File.open( File.join(working_dir, "tmp/pids/#{PID_FILE_NAME}"), 'w') do |f|
+      #   f.puts @pid
+      # end
 
       TinCan.redis.subscribe(*@events) do |on|
         on.message do |channel, msg|
@@ -56,25 +54,7 @@ module TinCan
       end
     end
 
-    protected
-    def load_enviroment(file = nil)
-      file ||= "."
 
-      if File.directory?(file) && File.exists?(File.expand_path("#{file}/config/environment.rb"))
-        require 'rails'
-        require File.expand_path("#{file}/config/environment.rb")
-        if defined?(::Rails) && ::Rails.respond_to?(:application)
-          # Rails 3
-          ::Rails.application.eager_load!
-        elsif defined?(::Rails::Initializer)
-          # Rails 2.3
-          $rails_rake_task = false
-          ::Rails::Initializer.run :load_application_classes
-        end
-      elsif File.file?(file)
-        require File.expand_path(file)
-      end
-    end
   end
 
 end
