@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+require 'daemons'
+
+# Quiet some warnings we see when running in warning mode:
+# RUBYOPT=-w bundle exec sidekiq
+DEBUG = ENV['DEBUG']
+
+begin
+  Daemons.run('lib/tin_can_handler.rb')
+rescue => e
+  raise e if DEBUG
+  STDERR.puts e.message
+  STDERR.puts e.backtrace.join("\n")
+  exit 1
+end
