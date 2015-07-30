@@ -65,6 +65,8 @@ module TinCan
       end
     elsif File.file?(file)
       require File.expand_path(file)
+    else
+      require File.expand_path("#{file}/config/tin_can_routes.rb")
     end
   end
 end
