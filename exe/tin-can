@@ -15,7 +15,7 @@ begin
     log_output: true,
     backtrace: true,
     log_dir: 'log/',
-    output_logfilename: "tin-can.log",
+    output_logfilename: 'tin-can.log',
   }
   Daemons.run_proc('tin-can', options) do
     TinCan.start

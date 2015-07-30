@@ -40,10 +40,6 @@ module TinCan
     @@handler.start
   end
 
-  def self.stop
-    TinCan::EventHandler.stop
-  end
-
   def self.redis
     return $redis if $redis
     raise  "Need to provide redis host and port to ::config" unless @@redis_port && @@redis_host
