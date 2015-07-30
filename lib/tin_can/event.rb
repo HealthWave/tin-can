@@ -10,7 +10,7 @@ module TinCan
 
     def fire!
       receivers = TinCan.redis.publish channel, payload
-      persist if receivers = 0
+      persist if receivers == 0
     end
 
     def persist
