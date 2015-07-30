@@ -49,7 +49,6 @@ module TinCan
 
   def self.load_environment(file = nil)
     file ||= "."
-    puts 'Loading environment...'
     # puts File.expand_path File.dirname(__FILE__)
     if File.directory?(file) && File.exists?(File.expand_path("#{file}/config/environment.rb"))
       require 'rails'

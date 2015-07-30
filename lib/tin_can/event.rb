@@ -8,13 +8,18 @@ module TinCan
       @payload = payload.to_json
     end
 
-    def fire!
-      receivers = TinCan.redis.publish channel, payload
-      persist if receivers == 0
+    def self.default_fallback &b
+      @@default_error_fallback_proc = b
     end
 
-    def persist
-      # code to persist to redis (see rpush)
+    def broadcast!
+      receivers = TinCan.redis.publish channel, payload
+      return unless receivers == 0
+      if block_given?
+        yield self
+      elsif @@default_error_fallback_proc
+        @@default_error_fallback_proc.call self
+      end
     end
 
   end

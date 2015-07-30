@@ -7,13 +7,22 @@ require 'tin_can'
 DEBUG = ENV['DEBUG']
 
 begin
-  TinCan.load_environment unless ARGV[0] == 'stop'
+  case ARGV[0]
+  when 'start'
+    puts 'Loading environment...'
+    TinCan.load_environment
+  when 'stop'
+    puts 'Stopping tin-can...'
+  end
+
   options = {
     app_name: 'tin-can',
+    multiple: false,
+    backtrace: true,
     monitor: true,
+    dir_mode: :script,
     dir: 'tmp/pids/',
     log_output: true,
-    backtrace: true,
     log_dir: 'log/',
     output_logfilename: 'tin-can.log',
   }

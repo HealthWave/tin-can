@@ -23,12 +23,14 @@ Or install it yourself as:
     $ gem install tin-can
 
 ## Usage
+The steps below should be applied on all apps that are communicating with each other.
 
-First create a initializer on config/tin_can.rb
+First create a initializer on config/tin_can_routes.rb
 
 ```ruby
-TinCan.subscribe 'event_name', to: MyEventController, action: :my_action
-TinCan.start
+TinCan.routes do
+  subscribe 'event_name', to: MyEventController, action: :my_action
+end
 ```
 
 Then create an EventController: app/event_controllers/my_event_controller.rb
@@ -43,8 +45,16 @@ Every time the TinCan receives an event, the TinCan::EventHandler will match and
 
 ### To send events
 ```ruby
-TinCan::Event.new(channel_name, payload)
+event = TinCan::Event.new(channel_name, payload)
+event.broadcast!
 ```
+If you broadcast an event when nobody is listening, the event will be lost. You can handle this case by bassing a block to the breadcast! method:
+```ruby
+TinCan::Event.new(channel_name, payload).broadcast! do |event|
+  # Saves the event to resque
+  Resque.enqueue( EventRetry, event.channel, event.payload )
+end
+
 
 ## Development
 
