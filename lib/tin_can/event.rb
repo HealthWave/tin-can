@@ -9,7 +9,12 @@ module TinCan
     end
 
     def fire!
-      TinCan.redis.publish channel, payload
+      receivers = TinCan.redis.publish channel, payload
+      persist if receivers = 0
+    end
+
+    def persist
+      # code to persist to redis (see rpush)
     end
 
   end
