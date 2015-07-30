@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'daemons'
 require 'tin_can'
+require 'logger'
 
 # Quiet some warnings we see when running in warning mode:
 # RUBYOPT=-w bundle exec sidekiq
@@ -8,13 +9,14 @@ DEBUG = ENV['DEBUG']
 
 begin
   case ARGV[0]
-  when 'start'
-    puts 'Loading environment...'
-    TinCan.load_environment
   when 'stop'
     puts 'Stopping tin-can...'
+  when 'status'
+    puts 'Checking...'
+  else
+    puts 'Loading environment...'
+    TinCan.load_environment
   end
-
   options = {
     app_name: 'tin-can',
     multiple: false,
@@ -27,6 +29,7 @@ begin
     output_logfilename: 'tin-can.log',
   }
   Daemons.run_proc('tin-can', options) do
+
     TinCan.start
   end
 rescue => e

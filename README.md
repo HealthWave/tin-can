@@ -29,7 +29,7 @@ First create a initializer on config/tin_can_routes.rb
 
 ```ruby
 TinCan.routes do
-  subscribe 'event_name', to: MyEventController, action: :my_action
+  route 'event_name', to: MyEventController, action: :my_action
 end
 ```
 

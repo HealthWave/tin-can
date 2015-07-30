@@ -28,7 +28,7 @@ module TinCan
   # {
   #   "health_wave.store_created" => {MyEventController => :store_created}
   # }
-  def self.subscribe(channel, to: TinCan::EventController, action:)
+  def self.route(channel, to: TinCan::EventController, action:)
     @@routes ||= {}
     @@routes[channel] = [ to,  action ]
   end
@@ -36,6 +36,7 @@ module TinCan
   def self.start
     raise TinCan::NotConfigured.new unless routes
     puts "Starting TinCan Handler with routes #{TinCan.routes}"
+
     @@handler = TinCan::EventHandler.new(routes.keys)
     @@handler.start
   end
