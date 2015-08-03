@@ -6,6 +6,8 @@ require "tin_can/event_controller"
 require "tin_can/event_handler"
 
 module TinCan
+  require 'tin_can/railtie' if defined?(Rails)
+
   @@handler = nil
   @@routes = nil
   @@redis_host = 'localhost'
