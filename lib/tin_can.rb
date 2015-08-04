@@ -4,6 +4,7 @@ require "tin_can/version"
 require "tin_can/event"
 require "tin_can/event_controller"
 require "tin_can/event_handler"
+require 'tin_can/tasks'
 
 module TinCan
   @@handler = nil
