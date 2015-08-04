@@ -3,7 +3,7 @@
 [![Code Climate](https://codeclimate.com/github/HealthWave/tin-can/badges/gpa.svg)](https://codeclimate.com/github/HealthWave/tin-can)
 [![Test Coverage](https://codeclimate.com/github/HealthWave/tin-can/badges/coverage.svg)](https://codeclimate.com/github/HealthWave/tin-can/coverage)
 
-tin-can allows you to do pub/sub between apps using redis.
+tin-can is a Rails gem that allows you to do pub/sub between apps using redis.
 
 
 ## Installation
@@ -18,12 +18,9 @@ And then execute:
 
     $ bundle install
 
-Or install it yourself as:
-
-    $ gem install tin-can
 
 ## Listening to events
-The steps below should be applied on all apps that are communicating with each other.
+The steps below should be applied on all apps that are receiving messages.
 
 First create a initializer on config/tin_can_routes.rb
 
@@ -71,12 +68,13 @@ end
 ```
 Every time the TinCan receives an event, the TinCan::EventHandler will match and route to the desired event controller and action.
 
-### To send events
+## Sending events
+Sending an event is as easy as
 ```ruby
 event = TinCan::Event.new(channel_name, payload)
 event.broadcast!
 ```
-If you broadcast an event when nobody is listening, the event will be lost. You can handle this case by bassing a block to the breadcast! method:
+If you broadcast an event when nobody is listening, the event will be lost. You can handle this case by bassing a block to the broadcast! method:
 ```ruby
 TinCan::Event.new(channel_name, payload).broadcast! do |event|
   # Saves the event to resque
