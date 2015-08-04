@@ -6,12 +6,6 @@ require "tin_can/event_controller"
 require "tin_can/event_handler"
 
 module TinCan
-  class Railtie < Rails::Railtie
-    rake_tasks do
-      load 'tasks/tin_can.rake'
-    end
-  end
-
   @@handler = nil
   @@routes = nil
   @@redis_host = 'localhost'
