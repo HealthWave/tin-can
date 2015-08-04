@@ -76,7 +76,9 @@ Every time the TinCan receives an event, the TinCan::EventHandler will match and
 ## Sending events
 Sending an event is as easy as
 ```ruby
-event = TinCan::Event.new(channel_name, payload)
+# payload must be an object that responds to to_json
+payload = {message: 'This is a message', wharever: true}
+event = TinCan::Event.new('event_name', payload)
 event.broadcast!
 ```
 If you broadcast an event when nobody is listening, the event will be lost. You can handle this case by bassing a block to the broadcast! method:
