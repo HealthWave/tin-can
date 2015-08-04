@@ -9,10 +9,14 @@ module TinCan
     end
 
     def start
-      puts "subscribing to events #{@events}"
+      log_msg = "Subscribing to events #{@events}"
+      puts log_msg
+      Rails.logger.info log_msg
       TinCan.redis.subscribe(*@events) do |on|
         on.message do |channel, msg|
-          puts "Received message with\n\tchannel:\t#{channel}\n\tmessage:\t#{msg}"
+          log_msg = "Received message with\n\tchannel:\t#{channel}\n\tmessage:\t#{msg}"
+          puts log_msg
+          Rails.logger.info log_msg
 
           controller_klass, action = TinCan.routes[channel]
 
@@ -28,6 +32,8 @@ module TinCan
           rescue StandardError => e
             puts e.message
             puts e.backtrace
+            Rails.logger.info e.message
+            Rails.logger.info e.backtrace
           end
         end
       end

@@ -38,7 +38,7 @@ module TinCan
   def self.start
     raise TinCan::NotConfigured.new unless routes
     puts "Starting TinCan Handler with routes #{TinCan.routes}"
-
+    Rails.logger.info "Starting TinCan Handler with routes #{TinCan.routes}"
     @@handler = TinCan::EventHandler.new(routes.keys)
     @@handler.start
   end
