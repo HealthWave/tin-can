@@ -22,7 +22,7 @@ Or install it yourself as:
 
     $ gem install tin-can
 
-## Usage
+## Listening to events
 The steps below should be applied on all apps that are communicating with each other.
 
 First create a initializer on config/tin_can_routes.rb
@@ -39,6 +39,34 @@ class MyEventController < TinCan::EventController
   def my_action
     # awesome stuff here!
   end
+end
+```
+
+Now create a rake task to start the TinCan Handler, for example:
+```ruby
+namespace 'tin_can' do
+  require 'tin_can'
+
+
+  desc 'Start the tin-can handler'
+  task start: :environment do
+    require "#{Rails.root}/config/tin_can_routes"
+    Rails.logger       = Logger.new(Rails.root.join('log', 'tin-can.log'))
+    Rails.logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'info').upcase)
+
+    if ENV['BACKGROUND']
+      Process.daemon(true, true)
+    end
+    pidfile = ENV['PIDFILE'] || 'tmp/pids/tin-can.pid'
+    File.open(pidfile, 'w') { |f| f << Process.pid }
+
+    Signal.trap('TERM') { abort }
+
+    Rails.logger.info "Starting TinCan daemon with pid #{Process.pid} and pidfile #{pidfile}"
+
+    TinCan.start
+  end
+
 end
 ```
 Every time the TinCan receives an event, the TinCan::EventHandler will match and route to the desired event controller and action.
