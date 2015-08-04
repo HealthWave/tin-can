@@ -66,6 +66,11 @@ namespace 'tin_can' do
 
 end
 ```
+And start by doing:
+```
+BACKGROUND=yes rake tin_can:start
+```
+
 Every time the TinCan receives an event, the TinCan::EventHandler will match and route to the desired event controller and action.
 
 ## Sending events
