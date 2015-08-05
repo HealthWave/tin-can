@@ -6,6 +6,7 @@ module TinCan
     def initialize(channel, payload)
       @channel = channel
       @payload = payload.to_json
+      @@default_error_fallback_proc = nil
     end
 
     def self.default_fallback &b
