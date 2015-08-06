@@ -28,26 +28,29 @@ describe TinCan::Event do
     end
   end
 
-  describe '#fire!' do
+  describe '#broadcast!' do
     let(:redis) { double("Redis") }
+
     it "usese redis' publish method" do
       allow( TinCan ).to receive(:redis).and_return(redis)
-      allow( redis ).to receive(:publish).with(channel, payload.to_json)
-      subject.broadcast!
+      expect( TinCan.redis ).to receive(:publish).with(channel, payload.to_json)
+      event.broadcast!
     end
 
     it "falls backs back to the default proc if one is set" do
-      TinCan::Event.default_fallback do
-        "my_proc"
+      TinCan::Event.default_fallback do |e|
+        [e, "my_proc"]
       end
-      fallback = TinCan::Event.new("channel", {a: 1}).broadcast!
+      yielded_event, fallback = event.broadcast!
+      expect(yielded_event).to be event
       expect(fallback).to eq "my_proc"
     end
 
     it "can define an inline fallback" do
-      fallback = TinCan::Event.new("channel", {a: 1}).broadcast! do
-        "my_proc"
+      yielded_event, fallback = event.broadcast! do |e|
+        [ e, "my_proc" ]
       end
+      expect(yielded_event).to be event
       expect(fallback).to eq "my_proc"
     end
 
@@ -55,9 +58,10 @@ describe TinCan::Event do
       TinCan::Event.default_fallback do
         "my_proc"
       end
-      fallback = TinCan::Event.new("channel", {a: 1}).broadcast! do
-        "inline_defined"
+      yielded_event, fallback = event.broadcast! do |e|
+        [ e, "inline_defined" ]
       end
+      expect(yielded_event).to be event
       expect(fallback).to eq "inline_defined"
     end
   end
