@@ -2,16 +2,19 @@ require 'json'
 
 module TinCan
   class Event
-    attr_reader :channel, :payload
-    def initialize(channel, payload)
-      @channel = channel
-      @payload = payload.to_json
-      @@default_error_fallback_proc = nil
-    end
+    @@default_error_fallback_proc = nil
 
     def self.default_fallback &b
       @@default_error_fallback_proc = b
     end
+
+    attr_reader :channel, :payload
+
+    def initialize(channel, payload)
+      @channel = channel
+      @payload = payload.to_json
+    end
+
 
     def broadcast!
       receivers = TinCan.redis.publish channel, payload
