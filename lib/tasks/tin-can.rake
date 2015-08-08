@@ -14,7 +14,7 @@ namespace 'tin-can' do
   task restart: :environment do
     puts "Restarting TinCan"
     stop
-    start
+    system "rake tin-can:start"
   end
 
 end
