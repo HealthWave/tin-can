@@ -143,9 +143,20 @@ end
 ```
 And start by doing:
 ```
-DAEMONIZE=true rake tin_can:start
+rake tin-can:start
 ```
-
+To stop:
+```ruby
+rake tin-can:stop
+```
+Restart:
+```ruby
+rake tin-can:restart
+```
+To run TinCan on foreground, do:
+```ruby
+FOREGROUND=true rake tin-can:start
+```
 Every time the TinCan receives an event, the TinCan::EventHandler will match and route to the desired event controller and action.
 
 ## Sending events
