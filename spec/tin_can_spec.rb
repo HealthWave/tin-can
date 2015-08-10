@@ -15,8 +15,14 @@ describe TinCan do
   end
 
   describe '::logger' do
-    it 'sets a logger if running under rails' do
-
+    it 'logs to stdout if logger is not set' do
+      expect(TinCan.logger.instance_variable_get(:@logdev).dev.tty?).to be true
+    end
+    it 'lets you set a custom logger' do
+      TinCan.logger = 'custom_logger'
+      expect(TinCan.logger).to be == 'custom_logger'
+      # put the logger back
+      TinCan.logger = nil
     end
   end
   describe '::config' do
@@ -27,7 +33,7 @@ describe TinCan do
     end
   end
 
-  describe '::subscribe' do
+  describe '::route' do
     it 'adds the routers info to the @@routes hash' do
       subject.routes do
         route 'my_event1', to: MyEventController, action: 'some_action1'
@@ -60,5 +66,20 @@ describe TinCan do
       expect(subject.redis).to be_a Redis
     end
   end
+
+  describe '::load_environment' do
+    it 'loads the rails environment if the gem is inside rails' do
+      file = '.'
+      allow_any_instance_of(File).to receive(:directory).with(file).and_return(true)
+      allow(File).to receive(:exists?).and_return(true)
+
+      allow(TinCan).to receive(:require).and_return(true)
+      subject.load_environment
+      expect(TinCan.rails).to be true
+    end
+
+  end
+
+
 
 end

@@ -22,10 +22,7 @@ end
 
 def start
   require "#{Rails.root}/config/tin_can_routes"
-  log_file = File.new(Rails.root.join('log', 'tin-can.log'))
-  TinCan.logger = Logger.new(log_file, 'weekly').tap do |log|
-    log.progname = self.name
-  end
+
   begin
     pidfile = ENV['PIDFILE'] || 'tmp/pids/tin-can.pid'
     # check if the pidfile exists
@@ -54,21 +51,31 @@ def start
     else
       # run in foreground if FOREGROUND env variable
       # is set.
-      unless ENV['FOREGROUND']
-        puts 'Starting TinCan...'
+
+      if ENV['FOREGROUND']
+        puts "Starting TinCan on foreground..."
+      else
+        # sets the log file
+        log_file_path = Rails.root.join('log', 'tin-can.log')
+        puts "Starting TinCan daemon:\n- PID #{Process.pid}\n- PID file #{pidfile}\n- Log File #{log_file_path}"
         Process.daemon(true, true)
-        # supress output
-        $stderr.reopen('/dev/null', 'a')
+        # Assign a logger
+        TinCan.logger = Logger.new(log_file_path, 'weekly').tap do |log|
+          log.progname = 'TinCan'
+        end
+        # send all output to the log file
+        log_file = File.new(log_file_path)
+        $stderr.reopen(log_file, 'a')
         $stdout.reopen($stderr)
+        $stderr.sync = true
+        $stdout.sync = true
       end
       # write pid file
       File.open(pidfile, 'w') { |f| f << Process.pid }
       # stop if ctrl/cmd+c
       Signal.trap('TERM') { abort }
 
-      TinCan.logger.info "Starting TinCan daemon with pid #{Process.pid} and pidfile #{pidfile}"
-
-      TinCan.start(log_file: log_file)
+      TinCan.start
     end
   end
 end
