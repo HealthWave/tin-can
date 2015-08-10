@@ -24,8 +24,6 @@ module TinCan
       if already_running?(pid)
         raise TinCan::AlreadyRunning.new(pid)
       else
-        # run in foreground if FOREGROUND env variable
-        # is set.
         unless foreground
 
           log_file_path = set_log_file
