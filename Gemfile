@@ -3,4 +3,9 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in TinCan.gemspec
 gemspec
 
-gem "codeclimate-test-reporter", group: :test, require: nil
+
+group :test do
+  gem "codeclimate-test-reporter", require: nil
+  gem "rspec"
+  gem "fakeredis", :require => "fakeredis/rspec"
+end

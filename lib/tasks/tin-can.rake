@@ -22,8 +22,10 @@ end
 
 def start
   require "#{Rails.root}/config/tin_can_routes"
-  Rails.logger       = Logger.new(Rails.root.join('log', 'tin-can.log'))
-  Rails.logger.level = Logger.const_get((ENV['LOG_LEVEL'] || 'info').upcase)
+  log_file = File.new(Rails.root.join('log', 'tin-can.log'))
+  TinCan.logger = Logger.new(log_file, 'weekly').tap do |log|
+    log.progname = self.name
+  end
   begin
     pidfile = ENV['PIDFILE'] || 'tmp/pids/tin-can.pid'
     # check if the pidfile exists
@@ -64,9 +66,9 @@ def start
       # stop if ctrl/cmd+c
       Signal.trap('TERM') { abort }
 
-      Rails.logger.info "Starting TinCan daemon with pid #{Process.pid} and pidfile #{pidfile}"
+      TinCan.logger.info "Starting TinCan daemon with pid #{Process.pid} and pidfile #{pidfile}"
 
-      TinCan.start
+      TinCan.start(log_file: log_file)
     end
   end
 end

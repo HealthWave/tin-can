@@ -8,7 +8,7 @@ describe "errors" do
   describe TinCan::NotConfigured do
     it 'has the correct error message' do
       message = subject.new.message
-      expect( message ).to eq "No routes specified, us ::subscribe to add routes."
+      expect( message ).to eq "No routes specified, use ::subscribe to add routes."
     end
   end
 

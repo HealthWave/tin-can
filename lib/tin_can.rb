@@ -11,6 +11,15 @@ module TinCan
   @@redis_host = 'localhost'
   @@redis_port = 6379
 
+  class << self
+    attr_writer :logger
+
+    def logger
+      @logger ||= Logger.new($stdout).tap do |log|
+        log.progname = self.name
+      end
+    end
+  end
 
   def self.routes &block
     if block_given?
@@ -33,10 +42,14 @@ module TinCan
     @@routes[channel] = [ to,  action ]
   end
 
-  def self.start
+  def self.start(log_file: false)
+    if log_file
+      TinCan.logger = Logger.new(log_file, 'weekly').tap do |log|
+        log.progname = self.name
+      end
+    end
     raise TinCan::NotConfigured.new unless routes
-    puts "Starting TinCan Handler with routes #{TinCan.routes}"
-    Rails.logger.info "Starting TinCan Handler with routes #{TinCan.routes}"
+    TinCan.logger.info "Starting TinCan Handler with routes #{TinCan.routes}"
     @@handler = TinCan::EventHandler.new(routes.keys)
     @@handler.start
   end
