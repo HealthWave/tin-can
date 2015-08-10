@@ -51,7 +51,7 @@ describe TinCan do
       allow_any_instance_of(TinCan::EventHandler).to receive(:start)
       allow( subject ).to receive(:routes) { nil }
       allow(TinCan).to receive(:require).and_return(true)
-      expect{ subject.start }.to raise_error TinCan::NotConfigured
+      expect{ subject.start }.to raise_error(TinCan::NotConfigured)
     end
 
     it 'starts the handler' do

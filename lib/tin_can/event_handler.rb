@@ -16,7 +16,7 @@ module TinCan
       end
     end
 
-    def start(pidfile: nil, foreground: false)
+    def start(pidfile: nil, foreground: false, test_mode: false)
       pidfile = set_pid_file
 
       pid = read_pidfile(pidfile)
@@ -28,7 +28,7 @@ module TinCan
 
           log_file_path = set_log_file
 
-          daemonize(pidfile, log_file_path)
+          daemonize(pidfile, log_file_path, test_mode: test_mode)
 
           set_logger(log_file_path)
 
@@ -61,9 +61,9 @@ module TinCan
       end
     end
 
-    def daemonize(pidfile, log_file_path)
+    def daemonize(pidfile, log_file_path, test_mode: false)
       puts "Starting TinCan daemon:\n- PID #{Process.pid}\n- PID file #{pidfile}\n- Log File #{log_file_path}"
-      Process.daemon(true, true)
+      Process.daemon(true, true) unless test_mode
     end
 
     def set_logger(log_file_path)
@@ -120,8 +120,13 @@ module TinCan
     def stop(pidfile: nil)
       pidfile ||= 'tmp/pids/tin-can.pid'
       pid = read_pidfile(pidfile)
+
       unless already_running?(pid)
         puts "Could not find any instances of TinCan running."
+        if File.exists?(pidfile)
+          puts "Removing stale PID file #{pidfile}..."
+          File.delete(pidfile)
+        end
         return false
       end
       begin
@@ -141,7 +146,8 @@ module TinCan
     end
 
     def already_running?(pid)
-      pid && (Process.getpgid( pid ) unless pid == 0 rescue nil)
+      return true if pid && (Process.getpgid(pid) unless pid == 0 rescue nil)
+      return false
     end
 
     def read_pidfile(pidfile)
