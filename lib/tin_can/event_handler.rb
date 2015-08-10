@@ -9,7 +9,7 @@ module TinCan
     def status(pidfile: nil)
       pidfile ||= 'tmp/pids/tin-can.pid'
       pid = read_pidfile(pidfile)
-      if pid && already_running?(pid)
+      if already_running?(pid)
         puts "TinCan is running with pid #{pid}."
       else
         puts "TinCan is NOT running."
@@ -19,13 +19,8 @@ module TinCan
     def start(pidfile: nil, foreground: false)
       pidfile = set_pid_file
 
-
-      # check if the pidfile exists
       pid = read_pidfile(pidfile)
 
-      # again, if no process is running, PID is == 0. Because
-      # Process.getpgid( 0 ) will return something we don't want,
-      # lets not even try if pid == 0
       if already_running?(pid)
         raise TinCan::AlreadyRunning.new(pid)
       else
@@ -127,7 +122,7 @@ module TinCan
     def stop(pidfile: nil)
       pidfile ||= 'tmp/pids/tin-can.pid'
       pid = read_pidfile(pidfile)
-      unless pid && already_running?(pid)
+      unless already_running?(pid)
         puts "Could not find any instances of TinCan running."
         return false
       end
@@ -148,7 +143,7 @@ module TinCan
     end
 
     def already_running?(pid)
-      Process.getpgid( pid ) unless pid == 0 rescue nil
+      pid && (Process.getpgid( pid ) unless pid == 0 rescue nil)
     end
 
     def read_pidfile(pidfile)
