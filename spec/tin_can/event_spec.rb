@@ -3,14 +3,14 @@ require 'tin_can/event'
 require 'byebug'
 
 describe TinCan::Event do
-  let(:channel) { "namesapce.my_channel" }
+  let(:channel) { "my_channel" }
   let(:payload) { {my_model_id: 123} }
   let(:event) { described_class.new(channel, payload) }
   subject { event }
 
   describe '::default_fallback' do
     it 'sets @@default_fallback_proc' do
-      TinCan::Event.default_fallback   do
+      TinCan::Event.default_fallback do
         "my_proc"
       end
       expect( TinCan::Event.class_variable_get(:@@default_error_fallback_proc) ).to_not be_nil

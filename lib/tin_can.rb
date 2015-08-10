@@ -10,7 +10,24 @@ module TinCan
   @@routes = nil
   @@redis_host = 'localhost'
   @@redis_port = 6379
+  @@rails = false
 
+  def self.rails
+    @@rails
+  end
+
+  def self.rails=value
+    @@rails = value
+  end
+
+  def self.logger=loggr
+    @@logger = loggr
+  end
+  def self.logger
+    @@logger ||= Logger.new($stdout).tap do |log|
+      log.progname = self.name
+    end
+  end
 
   def self.routes &block
     if block_given?
@@ -35,8 +52,7 @@ module TinCan
 
   def self.start
     raise TinCan::NotConfigured.new unless routes
-    puts "Starting TinCan Handler with routes #{TinCan.routes}"
-    Rails.logger.info "Starting TinCan Handler with routes #{TinCan.routes}"
+    TinCan.logger.info "Starting TinCan Handler with routes #{TinCan.routes}"
     @@handler = TinCan::EventHandler.new(routes.keys)
     @@handler.start
   end
@@ -50,11 +66,12 @@ module TinCan
 
   def self.load_environment(file = nil)
     file ||= "."
+    require File.expand_path("#{file}/config/tin_can_routes.rb")
     # puts File.expand_path File.dirname(__FILE__)
     if File.directory?(file) && File.exists?(File.expand_path("#{file}/config/environment.rb"))
       require 'rails'
       require File.expand_path("#{file}/config/environment.rb")
-      require File.expand_path("#{file}/config/tin_can_routes.rb")
+      TinCan.rails = true
       if defined?(::Rails) && ::Rails.respond_to?(:application)
         # Rails 3
         ::Rails.application.eager_load!
@@ -65,8 +82,6 @@ module TinCan
       end
     elsif File.file?(file)
       require File.expand_path(file)
-    else
-      require File.expand_path("#{file}/config/tin_can_routes.rb")
     end
   end
 end
