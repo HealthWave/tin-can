@@ -1,3 +1,10 @@
+class TinCan::AlreadyRunning < StandardError
+  def initialize(pid)
+    super("A TinCan handler is already running with PID: #{pid}.")
+  end
+end
+
+
 class TinCan::NotConfigured < StandardError
   def initialize
     super("No routes specified, use ::subscribe to add routes.")

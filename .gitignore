@@ -8,3 +8,5 @@
 /spec/reports/
 /tmp/
 *.gem
+tin-can.log
+tin-can.pid

@@ -12,6 +12,13 @@ describe "errors" do
     end
   end
 
+  describe TinCan::AlreadyRunning do
+    it 'has the correct error message' do
+      message = subject.new(111).message
+      expect( message ).to eq "A TinCan handler is already running with PID: 111."
+    end
+  end
+
   describe TinCan::EventController::ActionMissing do
     it 'has the correct error message' do
       message = subject.new(controller).message

@@ -6,7 +6,9 @@ describe TinCan do
   let(:controller) { MyEventController }
   let(:action) { "some_action1" }
   let(:channel) { "my_event1" }
-
+  before do
+    allow(TinCan.redis).to receive(:subscribe).and_return(true)
+  end
   it 'initializes the static variables' do
     expect( TinCan.class_variable_get(:@@redis_host) ).to be == 'localhost'
     expect( TinCan.class_variable_get(:@@redis_port) ).to be == 6379
@@ -48,11 +50,13 @@ describe TinCan do
     it 'raises TinCan::NotConfigured if the routes were not set' do
       allow_any_instance_of(TinCan::EventHandler).to receive(:start)
       allow( subject ).to receive(:routes) { nil }
+      allow(TinCan).to receive(:require).and_return(true)
       expect{ subject.start }.to raise_error TinCan::NotConfigured
     end
 
     it 'starts the handler' do
       expect_any_instance_of(TinCan::EventHandler).to receive(:start)
+      allow(TinCan).to receive(:require).and_return(true)
       subject.routes do
         route 'my_event1', to: MyEventController, action: 'some_action1'
       end

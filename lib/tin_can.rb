@@ -51,17 +51,30 @@ module TinCan
   end
 
   def self.start
+    TinCan.load_environment
     raise TinCan::NotConfigured.new unless routes
+    puts "Starting TinCan in foreground..." if ENV['FOREGROUND']
     TinCan.logger.info "Starting TinCan Handler with routes #{TinCan.routes}"
     @@handler = TinCan::EventHandler.new(routes.keys)
-    @@handler.start
+    @@handler.start(pidfile: ENV['PIDFILE'], foreground: ENV['FOREGROUND'])
+  end
+  def self.stop
+    TinCan.load_environment
+    @@handler = TinCan::EventHandler.new(routes.keys)
+    @@handler.stop(pidfile: ENV['PIDFILE'])
+  end
+
+  def self.status
+    TinCan.load_environment
+    @@handler = TinCan::EventHandler.new(routes.keys)
+    @@handler.status(pidfile: ENV['PIDFILE'])
   end
 
   def self.redis
     return $redis if $redis
-    raise  "Need to provide redis host and port to ::config" unless @@redis_port && @@redis_host
+    fail 'Need to provide redis host and port to ::config' unless @@redis_port && @@redis_host
 
-    $redis = Redis.new(:host => $redis_host, :port => $redis_port, :thread_safe => true, driver: :ruby)
+    $redis = Redis.new(host: $redis_host, port: $redis_port, thread_safe: true, driver: :ruby)
   end
 
   def self.load_environment(file = nil)
