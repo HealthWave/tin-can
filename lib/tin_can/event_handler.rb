@@ -2,7 +2,7 @@ module TinCan
   class EventHandler
     attr_reader :events
 
-    def initialize(events)
+    def initialize(events=nil)
       @events = events
     end
 

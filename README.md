@@ -101,8 +101,12 @@ end
 
 
 ## TODO
-- Decouple from Rails
-  - Use another logger
+- Add option to use RPUSH and BLPOP instead of pub/sub.
+- Add option to run as a separate thread inside Rails.
+- Add start/stop/status rake task to gem
+- Test usage outside Rails
+- Refactor a bit
+
 
 
 ## Contributing

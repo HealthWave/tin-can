@@ -59,14 +59,12 @@ module TinCan
     @@handler.start(pidfile: ENV['PIDFILE'], foreground: ENV['FOREGROUND'])
   end
   def self.stop
-    TinCan.load_environment
-    @@handler = TinCan::EventHandler.new(routes.keys)
+    @@handler = TinCan::EventHandler.new
     @@handler.stop(pidfile: ENV['PIDFILE'])
   end
 
   def self.status
-    TinCan.load_environment
-    @@handler = TinCan::EventHandler.new(routes.keys)
+    @@handler = TinCan::EventHandler.new
     @@handler.status(pidfile: ENV['PIDFILE'])
   end
 
