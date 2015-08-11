@@ -3,7 +3,7 @@ require 'byebug'
 describe TinCan::EventHandler do
   let(:events) { ['my_event1', 'my_event2'] }
   let(:event_handler) { described_class.new(events) }
-
+  let(:redis) { double("Redis") }
 
   subject {event_handler}
 
@@ -26,6 +26,7 @@ describe TinCan::EventHandler do
       it 'Fails with an error if already running' do
         allow(File).to receive(:read).and_return(111)
         allow(Process).to receive(:getpgid).and_return(true)
+        allow(TinCan).to receive(:redis).and_return(redis)
         allow(TinCan.redis).to receive(:subscribe).and_return(true)
         # TODO
         expect{ subject.start(foreground: true, test_mode: true) }.to raise_error #TinCan::AlreadyRunning.new(111)
@@ -61,6 +62,7 @@ describe TinCan::EventHandler do
   end
   describe "::subscribe_to_events" do
     it 'has the events set and subscribe to it' do
+      allow(TinCan).to receive(:redis).and_return(redis)
       allow(TinCan.redis).to receive(:subscribe).and_return(true)
       expect(event_handler.events).to be == ['my_event1', 'my_event2']
       expect(TinCan.redis).to receive(:subscribe).with('my_event1', 'my_event2')
