@@ -50,6 +50,18 @@ module TinCan
     @@routes[channel] = [ to,  action ]
   end
 
+  def self.embedded
+    return unless ENV['tincan']
+    return if defined?(Rails::Console) || defined?(Rake)
+    require File.expand_path("#{Rails.root}/config/tin_can_routes.rb")
+    thread = Thread.new do
+    ENV['FOREGROUND'] = 'yes'
+      loop do
+        TinCan.start
+      end
+    end
+  end
+
   def self.start
     TinCan.load_environment
     raise TinCan::NotConfigured.new unless routes
