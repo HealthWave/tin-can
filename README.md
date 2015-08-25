@@ -98,7 +98,7 @@ TinCan::Event.new(channel_name, payload).broadcast! do |event|
   # Saves the event to resque
   Resque.enqueue( EventRetry, event.channel, event.payload )
 end
-
+```
 
 ## TODO
 - Add option to use RPUSH and BLPOP instead of pub/sub.
