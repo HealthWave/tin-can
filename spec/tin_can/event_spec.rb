@@ -31,6 +31,11 @@ describe TinCan::Event do
   describe '#broadcast!' do
     let(:redis) { double("Redis") }
 
+    it 'returns true if the message was received' do
+      allow( TinCan.redis ).to receive(:publish).with(channel, payload.to_json).and_return(1)
+      expect( event.broadcast! ).to eq true
+    end
+
     it "usese redis' publish method" do
       allow( TinCan ).to receive(:redis).and_return(redis)
       expect( TinCan.redis ).to receive(:publish).with(channel, payload.to_json)
