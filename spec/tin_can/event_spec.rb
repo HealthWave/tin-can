@@ -30,10 +30,19 @@ describe TinCan::Event do
 
   describe '#broadcast!' do
     let(:redis) { double("Redis") }
+    let(:default_error_fallback_proc) { TinCan::Event.default_fallback }
+
+    before do
+      allow( TinCan.redis ).to receive(:publish).with(channel, payload.to_json).and_return(0)
+    end
 
     it 'returns true if the message was received' do
       allow( TinCan.redis ).to receive(:publish).with(channel, payload.to_json).and_return(1)
       expect( event.broadcast! ).to eq true
+    end
+
+    it 'returns false if the message was not received' do
+      expect( event.broadcast! ).to eq false
     end
 
     it "usese redis' publish method" do
@@ -44,30 +53,23 @@ describe TinCan::Event do
 
     it "falls backs back to the default proc if one is set" do
       TinCan::Event.default_fallback do |e|
-        [e, "my_proc"]
+        'wooo'
       end
-      yielded_event, fallback = event.broadcast!
-      expect(yielded_event).to be event
-      expect(fallback).to eq "my_proc"
+
+      expect(default_error_fallback_proc).to receive(:call)
+      event.broadcast!
     end
 
     it "can define an inline fallback" do
-      yielded_event, fallback = event.broadcast! do |e|
-        [ e, "my_proc" ]
-      end
-      expect(yielded_event).to be event
-      expect(fallback).to eq "my_proc"
+      expect{ |b| event.broadcast!(&b) }.to yield_control
     end
 
     it 'uses the inline proc even if a default proc is defined' do
       TinCan::Event.default_fallback do
         "my_proc"
       end
-      yielded_event, fallback = event.broadcast! do |e|
-        [ e, "inline_defined" ]
-      end
-      expect(yielded_event).to be event
-      expect(fallback).to eq "inline_defined"
+      expect(default_error_fallback_proc).to_not receive(:call)
+      event.broadcast!{}
     end
   end
 end
