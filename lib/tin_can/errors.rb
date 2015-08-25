@@ -28,3 +28,9 @@ class TinCan::EventController::ControllerNotDefined < StandardError
     super "Action #{controller} is not defined."
   end
 end
+
+class TinCan::Event::NotReceivedError < StandardError
+  def initialize channel, payload
+    super "There were no listeners on the [#{channel}] channel. The following payload could not be delivered\n\n#{payload}"
+  end
+end

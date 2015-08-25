@@ -40,4 +40,11 @@ describe "errors" do
     end
   end
 
+  describe TinCan::Event::NotReceivedError do
+    it 'has the correct error message' do
+      message = subject.new("my_super_cool_channel", {a: 1}).message
+      expect( message ).to eq  "There were no listeners on the [my_super_cool_channel] channel. The following payload could not be delivered\n\n#{{a: 1}}"
+    end
+  end
+
 end
