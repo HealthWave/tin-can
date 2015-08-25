@@ -18,7 +18,8 @@ module TinCan
 
     def broadcast!
       receivers = TinCan.redis.publish channel, payload
-      return unless receivers == 0
+      return true unless receivers == 0
+
       if block_given?
         yield self
       elsif @@default_error_fallback_proc
