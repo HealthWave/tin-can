@@ -73,6 +73,7 @@ describe TinCan::EventHandler do
 
   describe '::set_pid_file' do
     it 'returns the pid file path inside tmp or in same folder' do
+      allow(File).to receive(:exists?).and_return(false)
       expect(subject.set_pid_file).to be == File.expand_path('./tin-can.pid')
       allow(File).to receive(:exists?).and_return(true)
       expect(subject.set_pid_file).to be == File.expand_path('./tmp/pids/tin-can.pid')
